@@ -7,11 +7,11 @@ namespace CastleGrimtol.Project.Models
   public class Room : IRoom
   {
     public string Name { get; set; }
-    public string Description { get; set; } = "this is a room";
+    public string Description { get; set; } = "there is nothing in this room";
     public List<Item> Items { get; set; }
     public Dictionary<string, IRoom> Exits { get; set; }
     public string EventWithWand { get; set; }
-    public string EventNoWand { get; set; } = "Oh no! This room is full of Death Eaters and don't have a wand to protect yourself. You see green sparks flying and the last words you hear are Avada Kedrava. You are dead.";
+    public string EventNoWand { get; set; } = "Oh no! Death Eaters! You don't have a wand to protect yourself. You see green sparks flying and the last words you hear are Avada Kedrava. You are dead.";
 
     public bool WandRequired { get; set; } = true;
     public bool isWinningRoom { get; set; } = false;
@@ -29,17 +29,6 @@ namespace CastleGrimtol.Project.Models
     public bool IsWandRequired()
     {
       return WandRequired;
-    }
-    public string TriggerEvent(bool hasWand)
-    {
-      if (!hasWand)
-      {
-        return EventNoWand;
-      }
-      else
-      {
-        return EventWithWand;
-      }
     }
   }
 

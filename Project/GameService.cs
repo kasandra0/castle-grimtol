@@ -10,6 +10,7 @@ namespace CastleGrimtol.Project
     public IRoom CurrentRoom { get; set; }
     public Player CurrentPlayer { get; set; }
     private bool StillPlaying { get; set; } = true;
+    private bool NewGame { get; set; } = true;
 
     #region Game Control
     //Initializes the game, creates rooms, their exits, and add items to rooms
@@ -27,7 +28,11 @@ namespace CastleGrimtol.Project
     //Restarts the game
     public void Reset()
     {
-
+      Player newPlayer = new Player(CurrentPlayer.PlayerName);
+      CurrentPlayer = newPlayer;
+      Game game = new Game(CurrentPlayer.PlayerName);
+      CurrentRoom = game.CurrentRoom;
+      StillPlaying = true;
     }
 
     public void EndGame(bool winner)
@@ -38,52 +43,66 @@ namespace CastleGrimtol.Project
       }
       else
       {
-        System.Console.WriteLine("You Died. Enter reset to play again");
+        System.Console.WriteLine("You Died.");
       }
       StillPlaying = false;
     }
     //Setup and Starts the Game loop
     public void StartGame()
     {
-      while (StillPlaying)
+      while (NewGame)
       {
-        GetUserInput();
+        while (StillPlaying)
+        {
+          GetUserInput();
+        }
+        System.Console.WriteLine("Do you want to play again? (y/n)");
+        string answer = Console.ReadLine();
+        if (answer == "n")
+        {
+          break;
+        }
+        if (answer == "y")
+        {
+          Reset();
+        }
       }
     }
     public void GetUserInput()
     {
-      Console.Write($"You're in the {CurrentRoom.Name} \n\t What do you want to do? ");
+      Console.Write($"\n\t What do you want to do? ");
       string[] input = Console.ReadLine().ToLower().Split(' ');
       Console.Clear();
       switch (input[0])
       {
         case "look":
-          Console.WriteLine("action: LOOK");
+          Console.WriteLine("\tinput: LOOK");
           Look();
           break;
         case "quit":
-          Console.WriteLine("action: QUIT");
+          Console.WriteLine("\tinput: QUIT");
           Quit();
           break;
         case "help":
-          Console.WriteLine("action: HELP");
+          Console.WriteLine("\tinput: HELP");
+          Help();
           break;
         case "go":
-          Console.WriteLine("action: GO");
+          Console.WriteLine("\tinput: GO");
           if (input.Length > 1)
           {
             Go(input[1]);
           }
           break;
         case "take":
-          Console.WriteLine("action: TAKE");
+          Console.WriteLine("\tinput: TAKE");
           if (input.Length > 1)
           {
             TakeItem(input[1]);
           }
           break;
         case "use":
-          Console.WriteLine("action: USE");
+          Console.WriteLine("\tinput: USE");
           UseItem(input[1]);
           break;
         case "inventory":
@@ -106,18 +125,24 @@ namespace CastleGrimtol.Project
       else
       {
         CurrentRoom = CurrentRoom.Exits[direction];
+        Console.WriteLine(CurrentRoom.Description);
         if (CurrentRoom.WandRequired && !CurrentPlayer.HasItem("wand"))
         {
           Console.WriteLine($"{CurrentRoom.EventNoWand}");
+          EndGame(false);
         }
-        Console.WriteLine(CurrentRoom.Description);
       }
 
     }
 
     public void Help()
     {
-
+      System.Console.WriteLine($"LOOK: Prints the description of the room and any items that may be in the room");
+      System.Console.WriteLine($"GO <direction>: move in one of four directions(north, south, east, west)");
+      System.Console.WriteLine($"USE <item name>: Uses the item from your inventory");
+      System.Console.WriteLine($"TAKE <item name>: Places the item into your inventory and removes it from the room");
+      System.Console.WriteLine($"INVENTORY: displays all the items currently in your inventory");
+      System.Console.WriteLine($"QUIT: ends the current game");
     }
 
     public void Inventory()
@@ -130,15 +155,10 @@ namespace CastleGrimtol.Project
     public void Look()
     {
       Console.WriteLine(CurrentRoom.Description);
-      Console.WriteLine("\tYou can go: ");
-      foreach (var keypair in CurrentRoom.Exits)
-      {
-        Console.WriteLine($"\t{keypair.Key} into {keypair.Value.Name}");
-      }
       if (CurrentRoom.Items.Count > 0)
       {
-        Console.Write("\tItems in this room:\t");
-        CurrentRoom.Items.ForEach(i => Console.Write($" {i.Name}"));
+        Console.Write("\tItems in this room:\n");
+        CurrentRoom.Items.ForEach(i => Console.Write($" \t {i.Name}: {i.Description}\n"));
         Console.WriteLine("");
       }
     }
@@ -165,14 +185,6 @@ namespace CastleGrimtol.Project
         System.Console.WriteLine($"item {i.Name}");
         return i.Name.ToLower() == "horcrux";
       });
-      if (item == null)
-      {
-        System.Console.WriteLine($"no match: {itemName}");
-      }
-      if (h == null)
-      {
-        System.Console.WriteLine($"no match: horcux");
-      }
       if (item != null && h != null)
       {
         CurrentRoom.Items.Remove(h);

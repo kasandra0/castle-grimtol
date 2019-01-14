@@ -30,8 +30,8 @@ namespace CastleGrimtol.Project.Models
       r3.Items.Add(sword);
       r6.Items.Add(horcrux);
       r1.Description = "You've walked outside into the courtyard. Be careful, you are exposed out here.";
-      r2.Description = "The staffroom has two stone gargoyles guarding the front. There is a large wardrobe in the corner and you can hear something rattling inside it.";
-      r3.Description = "You've walked into the Great Hall. Normally filled with four giant long tables, there are now pieces of rubble everywhere.";
+      r2.Description = "The staffroom has two stone gargoyles guarding the front. There is a large wardrobe in the corner and you can hear something rattling inside it. Laying on one of the tables is wand.";
+      r3.Description = "You've walked into the Great Hall. Normally filled with four giant long tables, there are now pieces of rubble everywhere. Among the rubble you notice there is a sword sticking out.";
       r4.Description = "You've walked up the stairwell that leads to the fourth floor corridor. As you are walking the staircase moves. It stops on the second floor. You see a Death Eater turn the corner spots you. Grab your wand.";
       center.Description = "This is the entrance to the castle. It's surrounded by giant staircases and stone walls. You can go in any direction, but be careful. There are Death Eaters all over the castle";
       r6.Description = "You've reached Ravenclaw Tower. In the corner you see something sparkle as there is a flash outside. You walk closer and you see it's a tiara. Could it be the Lost Diadem of Ravenclaw? Take a closer look.";
@@ -47,9 +47,7 @@ namespace CastleGrimtol.Project.Models
       r3.AddConnectingRoom(center, "north");
       r4.AddConnectingRoom(center, "east");
       r6.AddConnectingRoom(r3, "north");
-      r6.Description = "Ravenclaw Tower, Horcux Room";
       r6.isWinningRoom = true;
-      // r6.Event = "Congratulations you have found the horcrux.";
       CurrentRoom = center;
     }
   }
